@@ -192,10 +192,10 @@ cmake --build . --config Release
 ## 5. Run
 
 ```bash
-./lane_detection
+./lanedetection
 ```
 
-(Windows: `lane_detection.exe`)
+(Windows: `lanedetection.exe`)
 
 ---
 
