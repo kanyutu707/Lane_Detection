@@ -1,16 +1,16 @@
-# Lane Detection using OpenCV (C++)
+# Lane Detection using OpenCV (C++ & CMake)
 
-This project implements a classical computer vision pipeline for lane detection using C++ and OpenCV. It processes a road video, detects lane markings using edge detection and the Probabilistic Hough Transform, and overlays the detected lane lines onto the original frames.
+This project implements a classical computer vision pipeline for lane detection using C++ and OpenCV. It processes a road video, detects lane markings using edge detection and the Probabilistic Hough Transform, and overlays detected lane lines onto the original frames.
 
-Repository: [https://github.com/kanyutu707/Lane_Detection.git](https://github.com/kanyutu707/Lane_Detection.git)
+Repository: [https://github.com/kanyutu707/Lane_Detection](https://github.com/kanyutu707/Lane_Detection)
 
 ---
 
 ## Overview
 
-The purpose of this project is to demonstrate a traditional (non–deep learning) approach to lane detection using fundamental image processing techniques. The implementation is lightweight, easy to understand, and suitable for learning computer vision concepts.
+The purpose of this project is to demonstrate a traditional (non–deep learning) approach to lane detection using fundamental image processing techniques. The implementation is lightweight, easy to understand, and ideal for learning core computer vision concepts.
 
-The pipeline includes:
+### Processing Pipeline
 
 * Video frame capture
 * Grayscale conversion
@@ -30,9 +30,7 @@ The current code contains a hard-coded video path:
 cv::VideoCapture cap("C:\\Users\\name\\projects\\lanedetection\\road.mp4");
 ```
 
-Before running the project, you must replace this path with the location of a road video on your own system.
-
-Example:
+Before running the project, replace this path with the location of a road video on your system:
 
 ```cpp
 cv::VideoCapture cap("path_to_your_video.mp4");
@@ -44,7 +42,7 @@ Make sure:
 * The path is correct.
 * The video clearly shows visible lane markings.
 
-You may also place your video file inside the project directory and reference it directly:
+Alternatively, place your video inside the project directory:
 
 ```cpp
 cv::VideoCapture cap("road.mp4");
@@ -54,35 +52,27 @@ cv::VideoCapture cap("road.mp4");
 
 ## How the Algorithm Works
 
-For each frame in the input video, the following steps are performed:
-
 ### 1. Grayscale Conversion
-
-Each frame is converted from BGR to grayscale:
 
 ```cpp
 cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
 ```
 
-This reduces computational complexity and prepares the image for edge detection.
+Reduces computational complexity and prepares the frame for edge detection.
 
 ---
 
 ### 2. Gaussian Blur
 
-Noise is reduced using a 9×9 Gaussian kernel:
-
 ```cpp
 cv::GaussianBlur(gray, blurredImage, cv::Size(9, 9), 1.0);
 ```
 
-This smooths the image and improves edge detection stability.
+Reduces noise and improves edge stability.
 
 ---
 
 ### 3. Canny Edge Detection
-
-Edges are extracted using:
 
 ```cpp
 cv::Canny(blurredImage, edges, 100, 120);
@@ -90,29 +80,25 @@ cv::Canny(blurredImage, edges, 100, 120);
 
 Thresholds:
 
-* Lower threshold: 100
-* Upper threshold: 120
+* Lower: 100
+* Upper: 120
 
-These values may need adjustment depending on lighting conditions and video quality.
+These may require tuning depending on lighting conditions.
 
 ---
 
 ### 4. Region of Interest (ROI)
-
-A trapezoidal mask is applied to isolate the road area where lanes are expected.
 
 ```cpp
 cv::fillConvexPoly(mask, roiPoints, 255);
 cv::bitwise_and(edges, mask, maskedEdges);
 ```
 
-This step removes unnecessary edges from areas such as the sky or roadside objects.
+A trapezoidal mask isolates the road region to eliminate irrelevant edges.
 
 ---
 
 ### 5. Probabilistic Hough Line Transform
-
-Lane lines are detected using:
 
 ```cpp
 cv::HoughLinesP(maskedEdges, linesP, 1, CV_PI / 180, 50, 50, 10);
@@ -121,71 +107,122 @@ cv::HoughLinesP(maskedEdges, linesP, 1, CV_PI / 180, 50, 50, 10);
 Parameters:
 
 * Rho resolution: 1 pixel
-* Theta resolution: 1 degree
+* Theta resolution: 1°
 * Threshold: 50
 * Minimum line length: 50
 * Maximum line gap: 10
 
-Detected lines are drawn onto a copy of the original frame.
+Detected lines are drawn onto the original frame.
 
 ---
 
 ## Requirements
 
-* C++ compiler (C++11 or later recommended)
-* OpenCV (version 4.x recommended)
+* C++11 or later
+* CMake (3.10 or later recommended)
+* OpenCV 4.x
 * Windows, Linux, or macOS
 
 ---
 
-## Build Instructions
+# Build Instructions (Using CMake)
 
-### Clone the Repository
+## 1. Clone the Repository
 
 ```bash
 git clone https://github.com/kanyutu707/Lane_Detection.git
 cd Lane_Detection
 ```
 
-### Compile (Linux/macOS)
+---
+
+## 2. Create Build Directory
 
 ```bash
-g++ main.cpp -o lane_detection `pkg-config --cflags --libs opencv4`
+mkdir build
+cd build
 ```
 
-### Compile (Windows with Visual Studio)
+---
 
-1. Install OpenCV.
-2. Configure include directories.
-3. Link OpenCV libraries in project settings.
-4. Build and run.
+## 3. Run CMake
+
+### Linux / macOS
+
+```bash
+cmake ..
+```
+
+If OpenCV is not automatically found:
+
+```bash
+cmake -DOpenCV_DIR=/path/to/opencv/build ..
+```
+
+---
+
+### Windows (Visual Studio)
+
+```bash
+cmake .. -G "Visual Studio 17 2022"
+```
+
+Then open the generated `.sln` file in Visual Studio and build.
+
+---
+
+## 4. Build
+
+### Linux / macOS
+
+```bash
+make
+```
+
+### Windows
+
+Build from Visual Studio or:
+
+```bash
+cmake --build . --config Release
+```
+
+---
+
+## 5. Run
+
+```bash
+./lane_detection
+```
+
+(Windows: `lane_detection.exe`)
 
 ---
 
 ## Limitations
 
-* Works best with clear lane markings.
-* Sensitive to lighting changes.
-* Does not handle curved lanes robustly.
-* No temporal smoothing between frames.
-* Fixed thresholds may not generalize to all road conditions.
+* Works best with clear, straight lane markings
+* Sensitive to lighting changes
+* Struggles with curved lanes
+* No temporal smoothing between frames
+* Fixed thresholds may not generalize well
 
 ---
 
 ## Possible Improvements
 
 * Adaptive Canny thresholds
-* Lane line averaging and stabilization
+* Lane line averaging and temporal smoothing
 * Real-time webcam input
-* Curved lane fitting
+* Polynomial fitting for curved lanes
 * Perspective transformation (bird’s-eye view)
-* Integration with machine learning approaches
+* Integration with deep learning approaches
 
 ---
 
 ## License
 
-This project is open-source and available for educational and research purposes.
+Open-source for educational and research purposes.
 
 ---
 
@@ -194,4 +231,5 @@ This project is open-source and available for educational and research purposes.
 Kanyutu
 GitHub: [https://github.com/kanyutu707](https://github.com/kanyutu707)
 
-This project is intended for learning and experimentation with classical computer vision techniques for autonomous driving applications.
+---
+
