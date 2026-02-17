@@ -3,7 +3,7 @@
 
 int main()
 {
-    cv::VideoCapture cap("C:\\Users\\kanyu\\projects\\lanedetection\\road.mp4");
+    cv::VideoCapture cap("C:\\Users\\name\\projects\\lanedetection\\road.mp4");
     if (!cap.isOpened())
     {
         std::cout << "Error opening video stream or file" << std::endl;
