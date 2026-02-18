@@ -195,14 +195,14 @@ cmake --build . --config Release
 ./lanedetection
 ```
 
+(Windows: `lanedetection.exe`)
+
 ## Sample Results
 ### Result 1
 <img src="https://github.com/kanyutu707/Lane_Detection/blob/master/assets/final1.png?raw=true" alt="first result">
 
 ### Result 2
 <img src="https://github.com/kanyutu707/Lane_Detection/blob/master/assets/final2.png?raw=true" alt="first result">
-
-(Windows: `lanedetection.exe`)
 
 ---
 
